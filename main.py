@@ -7,7 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
-# rds settings
+# rds settings from dotenv
 rds_host = os.getenv("RDS_HOST")
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
@@ -16,6 +16,7 @@ db_table = os.getenv("DB_TABLE")
 
 
 def isMd5(datahere):
+    # checks if string is a valid md5 hash
     validHash = re.finditer(r'(?=(\b[A-Fa-f0-9]{32}\b))', datahere)
     result = [match.group(1) for match in validHash]
     if result:
@@ -25,21 +26,21 @@ def isMd5(datahere):
 
 
 def file_to_array(file):
-    filestring = file.read()
+    # turns a newline-delimited file into an array of strings
+    file_string = file.read()
     array = []
-    for i in filestring.split():
+    for i in file_string.split():
         try:
             i = i.decode()
             array.append(i.replace("'", ""))
         except AttributeError:
             array.append(i.replace("'", ""))
             pass
-
-    # print(array)
     return array
 
 
 def file_loader(filename):
+    # loads a file and returns file object
     try:
         file = open(filename, 'r')
         return file
@@ -48,14 +49,9 @@ def file_loader(filename):
 
 
 def add_to_db(passwords, sourcedesc):
+    # adds an array of passwords to the database
     conn = pymysql.connect(rds_host, user=db_user, passwd=db_password, db=db_name, connect_timeout=5)
-
-    """
-    This function fetches content from mysql RDS instance
-    """
-
     item_count = 0
-
     with conn.cursor() as cur:
         for password in passwords:
             item_count += 1
@@ -72,9 +68,7 @@ def add_to_db(passwords, sourcedesc):
                 conn.commit()
             elif item_count % 100 == 0:
                 print(item_count)
-
         conn.commit()
-
     return "Added {} items to {}".format(item_count, db_table)
 
 
