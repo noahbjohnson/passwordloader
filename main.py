@@ -4,9 +4,8 @@ import os
 import pymysql
 import argparse
 from dotenv import load_dotenv, find_dotenv
+
 load_dotenv(find_dotenv())
-
-
 
 # rds settings
 rds_host = os.getenv("RDS_HOST")
@@ -31,9 +30,9 @@ def file_to_array(file):
     for i in filestring.split():
         try:
             i = i.decode()
-            array.append(i.replace("'",""))
+            array.append(i.replace("'", ""))
         except AttributeError:
-            array.append(i.replace("'",""))
+            array.append(i.replace("'", ""))
             pass
 
     # print(array)
@@ -48,7 +47,7 @@ def file_loader(filename):
         print("file not found")
 
 
-def add_to_db(passwords,sourcedesc):
+def add_to_db(passwords, sourcedesc):
     conn = pymysql.connect(rds_host, user=db_user, passwd=db_password, db=db_name, connect_timeout=5)
 
     """
@@ -86,8 +85,8 @@ def main(filename, source_desc):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='load newline delimited passwords to mysql database and compute md5 for '
-                                                'cleartext')
+    parser = argparse.ArgumentParser(description='load newline delimited passwords to mysql database and compute md5 '
+                                                 'for clear text')
     parser.add_argument('password_file', type=str,
                         help='The file containing passwords to load (1 per line)')
     parser.add_argument('description', type=str,
