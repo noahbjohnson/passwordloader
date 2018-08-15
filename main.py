@@ -61,13 +61,16 @@ def add_to_db(passwords, sourcedesc):
             else:
                 md5 = hashlib.md5(password.encode('utf-8')).hexdigest()
                 passwordstr = password
-            cur.execute("insert into {} values('{}', '{}', '{}')".format(db_table, md5, passwordstr, sourcedesc))
-            # print(item_count, len(passwords))
-            if item_count % 1000 == 0:
-                print(item_count)
-                conn.commit()
-            elif item_count % 100 == 0:
-                print(item_count)
+            try:
+                cur.execute("insert into {} values('{}', '{}', '{}')".format(db_table, md5, passwordstr, sourcedesc))
+                # print(item_count, len(passwords))
+                if item_count % 1000 == 0:
+                    print(item_count)
+                    conn.commit()
+                elif item_count % 100 == 0:
+                    print(item_count)
+            except:
+                print("error in line {}".format(item_count))
         conn.commit()
     return "Added {} items to {}".format(item_count, db_table)
 
