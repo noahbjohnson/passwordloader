@@ -32,9 +32,9 @@ def file_to_array(file):
     for i in file_string.split():
         try:
             i = i.decode()
-            array.append(i.replace("'", ""))
+            array.append(i.replace("'", "").strip())
         except AttributeError:
-            array.append(i.replace("'", ""))
+            array.append(i.replace("'", "").strip())
             pass
     return array
 
